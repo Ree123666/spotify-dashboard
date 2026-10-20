@@ -71,4 +71,4 @@ Real data scraped from Spotify, not synthetic. Some years and genres have gaps.
 
 Built with `uv init`, deployed on Streamlit Cloud (Python 3.14).
 App URL: <[app URL](https://final-data-analysis-app-ap3ye7xhqhkgada9kqg476.streamlit.app/)>
-Repo URL: <GitHub 仓库 URL>
+Repo URL: <[GitHub 仓库 URL](https://github.com/Ree123666/spotify-dashboard)>

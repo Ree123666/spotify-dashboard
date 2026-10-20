@@ -1,17 +1,13 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Spotify Curation Dashboard", layout="wide")
-
 
 @st.cache_data
 def load_data():
     return pd.read_csv("songs_normalize.csv")
 
-
 df = load_data()
-
 
 def main_genre(g):
     if pd.isna(g):
@@ -21,18 +17,14 @@ def main_genre(g):
         return "Unknown"
     return s.split(",")[0].strip()
 
-
 df["main_genre"] = df["genre"].apply(main_genre)
 df["year"] = pd.to_numeric(df["year"], errors="coerce")
 df["popularity"] = pd.to_numeric(df["popularity"], errors="coerce")
 df = df.dropna(subset=["year", "popularity"]).copy()
 df["year"] = df["year"].astype(int)
 
-st.title("Spotify Curation Dashboard — Team <Team Data Crew>")
-st.caption(
-    "For the Content Curation Lead. Decision: which genres/eras to prioritize "
-    "in weekly playlist and homepage placement."
-)
+st.title("Spotify Curation Dashboard — Team Data Crew")
+st.caption("For the Content Curation Lead. Decision: which genres/eras to prioritize in weekly playlist and homepage placement.")
 
 year_min, year_max = int(df["year"].min()), int(df["year"].max())
 year_range = st.slider("Year range", year_min, year_max, (year_min, year_max))
@@ -57,30 +49,17 @@ if len(d) == 0:
     st.warning("No tracks match the current filters.")
     st.stop()
 
+# 图1：用 Streamlit 内置折线图，不需要 matplotlib
 st.subheader("Average popularity by year")
-era = d.groupby("year")["popularity"].mean()
-fig1, ax1 = plt.subplots()
-ax1.plot(era.index, era.values, marker="o")
-ax1.set_xlabel("Year")
-ax1.set_ylabel("Avg popularity")
-ax1.grid(alpha=0.3)
-st.pyplot(fig1)
+era = d.groupby("year")["popularity"].mean().reset_index()
+st.line_chart(era, x="year", y="popularity")
 
+# 图2：用 Streamlit 内置散点图，不需要 matplotlib
 st.subheader("Danceability vs valence by genre")
-g = d.groupby("main_genre")[["danceability", "valence"]].mean().dropna()
-fig2, ax2 = plt.subplots()
-ax2.scatter(g["danceability"], g["valence"], s=60)
-for name, row in g.iterrows():
-    ax2.annotate(name, (row["danceability"], row["valence"]), fontsize=8)
-ax2.set_xlabel("Danceability")
-ax2.set_ylabel("Valence")
-ax2.grid(alpha=0.3)
-st.pyplot(fig2)
+g = d.groupby("main_genre")[["danceability", "valence"]].mean().dropna().reset_index()
+st.scatter_chart(g, x="danceability", y="valence", color="main_genre")
 
-st.caption(
-    "Data: 1998–2019, Kaggle Spotify snapshot | "
-    "Production refresh: weekly (Monday)"
-)
+st.caption("Data: 1998–2019, Kaggle Spotify snapshot | Production refresh: weekly (Monday)")
 
 with st.expander("Underlying rows (top 200)"):
     cols = ["artist", "song", "year", "popularity", "main_genre", "danceability", "valence"]

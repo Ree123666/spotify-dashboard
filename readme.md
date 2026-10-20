@@ -70,5 +70,5 @@ Real data scraped from Spotify, not synthetic. Some years and genres have gaps.
 ## Step 5 — Build and Deploy
 
 Built with `uv init`, deployed on Streamlit Cloud (Python 3.14).
-App URL: <app URL>
+App URL: <[app URL](https://final-data-analysis-app-ap3ye7xhqhkgada9kqg476.streamlit.app/)>
 Repo URL: <GitHub 仓库 URL>
